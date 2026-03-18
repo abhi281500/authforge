@@ -21,6 +21,12 @@ const userschema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    
+    forgotPasswordToken: String,
+    forgotPasswordExpiry: Date,
+    refreshToken: {
+        type: String
+    },
 
 }, { timestamps: true })
 
