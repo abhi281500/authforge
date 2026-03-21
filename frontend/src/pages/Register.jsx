@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
-import baseUrl from "../api/axios.js"
+import React, { useContext, useState } from 'react'
+
 import { useNavigate } from 'react-router-dom'
+import authcontext from '../context/AuthContext'
 
 function Register() {
   const [name,setName] =useState('')
@@ -8,15 +9,17 @@ function Register() {
   const [password,setPassword] =useState('')
   const [errorMsg, setErrorMsg] = useState('');
 
+  const {register} = useContext(authcontext)
+
   const navigate =useNavigate()
   const isFormValid = name && email && password;
 
   const handleRegister = async ()=>{
     setErrorMsg('');
     try {
-         await baseUrl.post('/auth/register',{name,email,password})
+         await register(name,email,password)
         
-        navigate('/login')
+       
 
     } catch (error) {
       if (error.response && error.response.data) {
@@ -42,6 +45,7 @@ function Register() {
       <label>Full Name</label>
       <input
         type='text'
+        value={name}
         placeholder='Enter your name'
         onChange={(e) => setName(e.target.value)}
       />
@@ -52,8 +56,10 @@ function Register() {
       <label>Email Address</label>
       <input
         type='email'
+        value={email}
         placeholder='Enter your email'
         onChange={(e) => setEmail(e.target.value)}
+        required
       />
     </div>
 
@@ -61,6 +67,7 @@ function Register() {
       <label>Password</label>
       <input
         type='password'
+        value={password}
         placeholder='Enter your password'
         onChange={(e) => setPassword(e.target.value)}
       />
@@ -75,8 +82,8 @@ function Register() {
       </button>
 
     <p>
-        Already have an account? 
-        <span onClick={() => navigate('/login')} style={{cursor: 'pointer', color: 'blue'}}> Login here</span>
+        Already have an account?
+        <span onClick={() => navigate('/login')} style={{cursor: 'pointer', color: 'blue'}}> Sign In here</span>
       </p>
   </div>
 );

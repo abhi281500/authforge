@@ -1,64 +1,79 @@
-import {useNavigate} from "react-router-dom"
-import React, { useState } from 'react'
-import baseURL from '../api/axios.js'
+import { useNavigate } from "react-router-dom"
+import React, { useContext, useState } from 'react'
+
+import authcontext from "../context/AuthContext.jsx"
 
 function Login() {
-  const [email,setEmail] =useState('')
-  const[password,setPassword] =useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [errorMsg, setErrorMsg] = useState('');
 
   const navigate = useNavigate()
-  
-  const handleLogin = async() =>{
-    setErrorMsg('');
+  const {login} = useContext(authcontext)
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setErrorMsg(''); // Purana error saaf karein
     try {
-    const res =  await baseURL.post("/auth/login",{email,password})
-      console.log("successful Login : ",res.data);
-      localStorage.setItem("token", res.data.accessToken);
-
-      navigate("/dashboard")
-      
+        
+      await login(email, password); 
+        
     } catch (error) {
-      console.log("Full Error Object:", error.response);
-      if (error.response && error.response.data) {
-        setErrorMsg(error.response.data.message || "Something went wrong");
-      } else {
-        setErrorMsg("Server issue. Please try again later.");
-      }
-      
+        
+        const msg = error.response?.data?.message || "Invalid credentials";
+        setErrorMsg(msg);
     }
-  }
+};
+  
   return (
-  <div className="login-container">
-    <h2>Welcome Back</h2>
+   <form onSubmit={handleSubmit} className="login-container">
+  <h2>Log in to your account</h2>
 
-    {errorMsg && (
-        <div style={{ color: 'white', backgroundColor: '#ff4d4d', padding: '10px', borderRadius: '5px', marginBottom: '15px' }}>
-          {errorMsg}
-        </div>
-      )}
-
-    <div className='email'>
-      <label>Email Address</label>
-      <input
-        type='email'
-        placeholder='Enter your email'
-        onChange={(e) => setEmail(e.target.value)}
-      />
+  {errorMsg && (
+    <div style={{ color: 'white', backgroundColor: '#ff4d4d', padding: '10px', borderRadius: '5px', marginBottom: '15px' }}>
+      {errorMsg}
     </div>
+  )}
 
-    <div className='password'>
-      <label>Password</label>
-      <input
-        type='password'
-        placeholder='Enter your password'
-        onChange={(e) => setPassword(e.target.value)}
-      />
-    </div>
-
-    <button onClick={handleLogin}>Login</button>
+  <div className='email'>
+    <label>Email Address</label>
+    <input
+      type='email'
+      placeholder='Enter your email'
+      onChange={(e) => setEmail(e.target.value)}
+      required
+    />
   </div>
-);
+
+  <div className='password'>
+    <label>Password</label>
+
+    <span
+      onClick={() => navigate('/forgotpassword')}
+      style={{ cursor: 'pointer', color: 'blue' }}
+    >
+      Forgot password?
+    </span>
+
+    <input
+      type='password'
+      placeholder='Enter your password'
+      onChange={(e) => setPassword(e.target.value)}
+      required
+    />
+  </div>
+
+  <button type="submit">Login</button>
+
+  <p>
+    Don't have an account?
+    <span onClick={() => navigate('/register')} style={{ cursor: 'pointer', color: 'blue' }}>
+      Sign Up
+    </span>
+  </p>
+</form>
+  );
 
 
 

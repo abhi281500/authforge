@@ -15,18 +15,18 @@ export const UserRegister = async (req, res) => {
     try {
         const { name, email, password, isverified } = req.body
         if (!name)
-            throw new Error("name is required");
+             return res.status(400).json({message :"name is required"})
         if (!email)
-            throw new Error("email is required");
+             return res.status(400).json({message :"Email is required"})
         if (!password)
-            throw new Error("password is required");
+             return res.status(400).json({message :"password is required"})
 
 
 
         const existUser = await User.findOne({ email })
 
         if (existUser)
-            throw new Error("User is already exist")
+             return res.status(400).json({message :"User with this email already exist "})
 
         const saltRounds = 10
 
@@ -56,7 +56,7 @@ export const UserRegister = async (req, res) => {
 
     }
     catch (error) {
-        return res.status(500).json({ message: error.message });
+        return res.status(400).json({ message: error.message });
     }
 
 }
@@ -81,21 +81,21 @@ export const UserLogin = async (req, res) => {
         const { email, password } = req.body
 
         if (!email)
-            return res.status(400).json("Email is required")
+            return res.status(400).json({message :"Email is required"})
 
         if (!password)
-            return res.status(400).json("password is required")
+            return res.status(400).json({message :"password is required"})
 
         const existUser = await User.findOne({ email })
 
         if (!existUser)
-            return res.status(400).json("Invalid credential")
+            return res.status(400).json({message :"Account not found. Don't have an account? "})
 
 
         const isMatch = await bcrypt.compare(password, existUser.password)
 
         if (!isMatch)
-            return res.status(400).json("Invalid credential")
+            return res.status(400).json({message :"Incorrect Password"})
 
 
 
@@ -150,12 +150,12 @@ export const UserLogout = async (req, res) => {
         const { refreshToken } = req.body
 
         if (!refreshToken)
-            return res.status(400).json("RefreshToken is required")
+            return res.status(400).json({message :"RefreshToken is required"})
 
         const user = await User.findOne({ refreshToken })
 
         if (!user)
-            return res.status(401).json("Invalid refresh token")
+            return res.status(401).json({message :"Invalid refresh token"})
 
 
         user.refreshToken = null
@@ -187,13 +187,13 @@ export const forgotPassword = async (req, res) => {
     try {
         const { email } = req.body
         if (!email)
-            return res.status(400).json("Email is required")
+            return res.status(400).json({message :"Email is required"})
 
 
         const user = await User.findOne({ email })
 
         if (!user)
-            return res.status(400).json("User not Found")
+            return res.status(400).json({message :"User not Found"})
 
         const resetToken = crypto.randomBytes(20).toString('hex');
 
@@ -246,7 +246,7 @@ export const resetPassword = async (req, res) => {
         const { token } = req.params
         const { password } = req.body
         if (!password)
-            return res.status(400).json("New Password is required")
+            return res.status(400).json({message :"New Password is required"})
 
         const hashedToken = crypto
             .createHash("sha256")
@@ -259,7 +259,7 @@ export const resetPassword = async (req, res) => {
         })
 
         if (!user)
-            return res.status(400).json("Invalid token or expired token")
+            return res.status(400).json({message : "Invalid token or expired token"})
 
         user.password = await bcrypt.hash(password, 10)
 
