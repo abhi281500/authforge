@@ -18,6 +18,7 @@ function ForgotPassWord() {
     try {
       setLoading(true)
       await forgotPassword(email)
+      
       setSuccessMsg("Reset link has been sent to your email address!")
     } catch (error) {
       setErrorMsg(error.response?.data?.message || "Something went wrong")
