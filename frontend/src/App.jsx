@@ -3,7 +3,7 @@ import './App.css'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import Register from './pages/Register'
-import ForgotPassWord from './pages/ForgotPassWord'
+import ForgotPassword from './pages/ForgotPassWord'
 import ResetPassword from './pages/ResetPassword'
 import { AuthProvider } from './context/AuthProvider'
 import Navbar from './components/Navbar'
@@ -29,7 +29,10 @@ function App() {
             } />
 
             
-            <Route path='/forgotpassword' element={<ForgotPassWord />} />
+            <Route path='/forgotpassword' element={
+             <ForgotPassword/>
+             } 
+              />
             <Route path='/reset-password/:token' element={<ResetPassword />} />
           </Routes>
         </div>

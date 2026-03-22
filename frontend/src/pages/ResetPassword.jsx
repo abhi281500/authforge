@@ -17,9 +17,13 @@ function ResetPassword() {
 
 
     const handleReset = async () => {
-        if (!token || token === ":token") {
-            return setErrorMsg("Invalid or expired reset link.");
-        }
+        if (!token) {
+        return setErrorMsg("Invalid or expired reset link.");
+    }
+
+        if (password !== confirmPassword) {
+  return setErrorMsg("Passwords do not match");
+}
         try {
             await resetPassword(token, password);
             setSuccessMsg("Password updated! Redirecting to login...");

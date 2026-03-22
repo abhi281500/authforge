@@ -70,7 +70,7 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem("accessToken", res.data.accessToken);
             localStorage.setItem("refreshToken", res.data.refreshToken);
 
-           await  navigate('/dashboard')
+            navigate('/dashboard')
             return res.data
 
         } catch (error) {
